@@ -1,0 +1,107 @@
+database:
+  add_user:
+    add1:
+      input:
+        lastfm_username: "username"
+        telegram_handle: "@username"
+      output: 1
+  scrobble_track:
+    scrobble1-1:
+      input:
+        user: 1
+        artist_name: "Some underground artist"
+        artist_mbid: ""
+        album_title: ""
+        album_mbid: ""
+        track_title: "...and his very popular song"
+        track_mbid: ""
+        scrobbled: "2020-03-01 12:01:59"
+      output: [1, 1, 1, 1]
+    scrobble1-2:
+      input:
+        user: 1
+        artist_name: "Some underground artist"
+        artist_mbid: ""
+        album_title: "Hey, he has an album!"
+        album_mbid: ""
+        track_title: "...and at least another song"
+        track_mbid: ""
+        scrobbled: "2020-03-01 12:03:44"
+      output: [1, 2, 2, 2]
+    scrobble1-3:
+      input:
+        user: 1
+        artist_name: "Some underground artist"
+        artist_mbid: ""
+        album_title: "Hey, he has an album!"
+        album_mbid: ""
+        track_title: "No, rather two songs on that album"
+        track_mbid: ""
+        scrobbled: "2020-03-01 12:13:21"
+      output: [1, 2, 3, 3]
+    scrobble1-4:
+      input:
+        user: 1
+        artist_name: "Some underground artist"
+        artist_mbid: ""
+        album_title: "Hey, he has an album!"
+        album_mbid: ""
+        track_title: "No, rather two songs on that album"
+        track_mbid: ""
+        scrobbled: "2020-03-01 12:15:51"
+      output: [1, 2, 3, 4]
+    scrobble2-1:
+      input:
+        user: 1
+        artist_name: "Some famous artist"
+        artist_mbid: "Artist2 mbid"
+        album_title: ""
+        album_mbid: ""
+        track_title: "Track1"
+        track_mbid: "Track0-1 mbid"
+        scrobbled: "2020-03-01 13:01:01"
+      output: [2, 3, 4, 5]
+    scrobble2-2:
+      input:
+        user: 1
+        artist_name: "Some famous artist"
+        artist_mbid: "Artist2 mbid"
+        album_title: "Album 1-1"
+        album_mbid: "Album 1-1 mbid"
+        track_title: "Track1"
+        track_mbid: "Track1-1 mbid"
+        scrobbled: "2020-03-01 13:01:01"
+      output: [2, 4, 5, 6]
+    scrobble2-3:
+      input:
+        user: 1
+        artist_name: "Some famous artist"
+        artist_mbid: "Artist2 mbid"
+        album_title: "Album 1-1"
+        album_mbid: "Album 1-1 mbid"
+        track_title: "Track2"
+        track_mbid: "Track1-2 mbid"
+        scrobbled: "2020-03-01 13:01:01"
+      output: [2, 5, 6, 7]
+    scrobble2-4:
+      input:
+        user: 1
+        artist_name: "Some famous artist"
+        artist_mbid: "Artist2 mbid"
+        album_title: "Album 1-2"
+        album_mbid: "Album 1-2 mbid"
+        track_title: "Track1"
+        track_mbid: "Track2-1 mbid"
+        scrobbled: "2020-03-01 13:01:01"
+      output: [2, 6, 7, 8]
+    scrobble1-5:
+      input:
+        user: 1
+        artist_name: "Some underground artist"
+        artist_mbid: ""
+        album_title: "Hey, he has an album!"
+        album_mbid: ""
+        track_title: "...and his very popular song"
+        track_mbid: ""
+        scrobbled: "2020-03-01 12:15:51"
+      output: [1, 2, 8, 9]
