@@ -1,25 +1,12 @@
 database:
-    host: ...
-    port: ...
-    user: ...
-    password: ...
+    host: ''
+    port: ''
+    user: ''
+    password: ''
     database: 'musicbro2_prod'
 logger:
     name: 'musicbro'
-    config: '..\config\logging.yaml'
+    config: '..\config\logging_template.yaml'
 lastfm:
-    token: ...
+    token: ''
     per_page: 1000
-discogs:
-    token: ...
-    requests per second: 1
-telegram:
-    token: ...
-    proxy: ...
-tracked artists:
-    A1 threshold: 300
-    A2 threshold: 100
-    B1 threshold: 50
-    listening threshold: 730
-conversations:
-    report past releases: 239
