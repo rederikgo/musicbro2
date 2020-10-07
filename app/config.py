@@ -31,7 +31,7 @@ class Config:
         try:
             with open(path, 'r', encoding="utf-8") as configfile:
                 cfg = yaml.safe_load(configfile)
-        except:
+        except IOError:
             raise SystemExit('Config: Can\'t open config file. Closing...')
 
         cfg = self.remove_spaces_from_keys(cfg)
@@ -74,7 +74,7 @@ class Config:
         try:
             with open(self.logger.config, 'r') as logging_cfg_file:
                 logging_cfg = yaml.safe_load(logging_cfg_file)
-        except:
+        except IOError:
             raise SystemExit('Config: Can\'t load logging config. Closing...')
 
         logging.config.dictConfig(logging_cfg)

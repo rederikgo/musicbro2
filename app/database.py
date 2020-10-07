@@ -1,5 +1,5 @@
 import datetime
-from typing import Optional, List
+from typing import Optional, Tuple
 
 import psycopg2
 
@@ -203,7 +203,7 @@ class LastfmUpdater(DB):
         return result
 
     # Add scrobbled track to recent tracks
-    def add_scrobbled_track(self, user: int, artist_name: str, artist_mbid: str, album_title: str, album_mbid: str, track_title: str, track_mbid: str, scrobbled: datetime) -> List[int]:
+    def add_scrobbled_track(self, user: int, artist_name: str, artist_mbid: str, album_title: str, album_mbid: str, track_title: str, track_mbid: str, scrobbled: datetime) -> Optional[Tuple]:
         if not artist_name or not track_title:
             self.logger.error('Last.fm import: Missing track or artist. Skipping...')
             return
@@ -233,7 +233,7 @@ class LastfmUpdater(DB):
             values (%s, %s, %s, %s)
             returning id
         """, (user, track_id, scrobbled, self.get_utc_now()))
-        scrobbled_id = self.cur.fetchall()[0][0]
+        scrobbled_id = self.cur.fetchall()[0][0]  # type: int
 
         return artist_id, album_id, track_id, scrobbled_id
 
