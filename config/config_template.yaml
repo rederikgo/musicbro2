@@ -10,3 +10,5 @@ logger:
 lastfm:
     token: ''
     per_page: 1000
+    rate_limit: 1
+    error_retries: 3

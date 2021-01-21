@@ -8,5 +8,7 @@ logger:
     name: 'musicbro'
     config: 'test_data\logging.yaml'
 lastfm:
-    token: ''
+    token: 'sometoken'
     per_page: 1000
+    rate_limit: 1
+    error_retries: 3

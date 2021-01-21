@@ -60,6 +60,8 @@ class Config:
     class Lastfm:
         token: str
         per_page: int
+        rate_limit: int
+        error_retries: int
 
     def remove_spaces_from_keys(self, d: dict) -> dict:
         keys = [*d]

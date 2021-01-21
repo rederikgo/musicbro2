@@ -9,7 +9,7 @@ from app.config import Config
 def test_load_cfg():
     path = 'test_data\\config.yaml'
     cfg = Config(path)
-    assert cfg.lastfm.token == ''
+    assert cfg.lastfm.token == 'sometoken'
 
     with pytest.raises(SystemExit):
         path = 'test_data\\nonexisting.yaml'

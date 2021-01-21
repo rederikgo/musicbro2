@@ -105,3 +105,111 @@ database:
         track_mbid: ""
         scrobbled: "2020-03-01 12:15:51"
       output: [1, 2, 8, 9]
+lastfm: 
+    error: 
+        input:
+            key: "somekey"
+            user: "somenonexistinguser"
+            from: "01.01.2030 00:00:00"
+            to: "01.01.2030 12:00:00"
+        url: 
+            - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=somenonexistinguser&from=1893456000&to=1893499200&limit=1000&format=json&page=1"
+        response: 
+            - '{"error":6,"message":"User not found"}'
+        output: null
+    no_tracks: 
+        input:
+            key: "somekey"
+            user: "someuser"
+            from: "02.01.2030 00:00:00"
+            to: "02.01.2030 12:00:00"
+        url: 
+            - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=someuser&from=1893542400&to=1893585600&limit=1000&format=json&page=1"
+        response: 
+            - '{"recenttracks":{"@attr":{"page":"1","total":"0","user":"someuser","perPage":"1000","totalPages":"0"},"track":[]}}'
+        output: []
+    no_tracks_nowplaying: 
+        input:
+            key: "somekey"
+            user: "someuser"
+            from: "03.01.2030 00:00:00"
+            to: "03.01.2030 12:00:00"
+        url: 
+            - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=someuser&from=1893628800&to=1893672000&limit=1000&format=json&page=1"
+        response: 
+            - '{"recenttracks":{"@attr":{"page":"1","total":"0","user":"someuser","perPage":"1000","totalPages":"0"},"track":{"artist":{"mbid":"b7539c32-53e7-4908-bda3-81449c367da6","#text":"Lana Del Rey"},"@attr":{"nowplaying":"true"},"mbid":"103f8ce5-7417-4e87-bfd0-002f77cdcb42","album":{"mbid":"","#text":"Born to Die - The Paradise Edition"},"streamable":"0","url":"https:\\/\\/www.last.fm\\/music\\/Lana+Del+Rey\\/_\\/Radio","name":"Radio","image":[{"size":"small","#text":"https:\\/\\/lastfm.freetls.fastly.net\\/i\\/u\\/34s\\/0c1ab2edc3e4ed8295bf7764d42ac38a.png"},{"size":"medium","#text":"https:\\/\\/lastfm.freetls.fastly.net\\/i\\/u\\/64s\\/0c1ab2edc3e4ed8295bf7764d42ac38a.png"},{"size":"large","#text":"https:\\/\\/lastfm.freetls.fastly.net\\/i\\/u\\/174s\\/0c1ab2edc3e4ed8295bf7764d42ac38a.png"},{"size":"extralarge","#text":"https:\\/\\/lastfm.freetls.fastly.net\\/i\\/u\\/300x300\\/0c1ab2edc3e4ed8295bf7764d42ac38a.png"}]}}}'
+        output: []
+    some_tracks_one_page: 
+        input:
+            key: "somekey"
+            user: "someuser"
+            from: "03.10.2020 21:56:02"
+            to: "03.10.2020 22:35:00"
+        url: 
+            - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=someuser&from=1601762162&to=1601764500&limit=1000&format=json&page=1"
+        response: 
+          - '{"recenttracks":{"@attr":{"page":"1","total":"3","user":"someuser","perPage":"1000","totalPages":"1"},"track":[{"artist":{"mbid":"","#text":"Interpol"},"album":{"mbid":"","#text":"Turn On the Bright Lights (Tenth Anniversary Edition)"},"image":[{"size":"small","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/34s\/a261bb41af894c23ade468ca9f5c4ae9.png"},{"size":"medium","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/64s\/a261bb41af894c23ade468ca9f5c4ae9.png"},{"size":"large","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/174s\/a261bb41af894c23ade468ca9f5c4ae9.png"},{"size":"extralarge","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/300x300\/a261bb41af894c23ade468ca9f5c4ae9.png"}],"streamable":"0","date":{"uts":"1601764415","#text":"03 Oct 2020, 22:33"},"url":"https:\/\/www.last.fm\/music\/Interpol\/_\/NYC","name":"NYC","mbid":"00a9cf32-9595-4182-b8ff-2ac1fd5c0448"},{"artist":{"mbid":"","#text":"Lush"},"album":{"mbid":"19166dda-fa04-4b48-9c66-d898aa6a2589","#text":"Spooky"},"image":[{"size":"small","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/34s\/bfb054f9639a4ce195ced8ea7305f2bc.png"},{"size":"medium","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/64s\/bfb054f9639a4ce195ced8ea7305f2bc.png"},{"size":"large","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/174s\/bfb054f9639a4ce195ced8ea7305f2bc.png"},{"size":"extralarge","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/300x300\/bfb054f9639a4ce195ced8ea7305f2bc.png"}],"streamable":"0","date":{"uts":"1601762415","#text":"03 Oct 2020, 22:00"},"url":"https:\/\/www.last.fm\/music\/Lush\/_\/Nothing+Natural","name":"Nothing Natural","mbid":"0683db6c-a90a-3615-b9b0-293d7580ab72"},{"artist":{"mbid":"69ee3720-a7cb-4402-b48d-a02c366f2bcf","#text":"The Cure"},"album":{"mbid":"","#text":"Staring At The Sea - The Singles"},"image":[{"size":"small","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/34s\/d896b0acc9a14a14921401752121e853.jpg"},{"size":"medium","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/64s\/d896b0acc9a14a14921401752121e853.jpg"},{"size":"large","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/174s\/d896b0acc9a14a14921401752121e853.jpg"},{"size":"extralarge","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/300x300\/d896b0acc9a14a14921401752121e853.jpg"}],"streamable":"0","date":{"uts":"1601762162","#text":"03 Oct 2020, 21:56"},"url":"https:\/\/www.last.fm\/music\/The+Cure\/_\/Charlotte+Sometimes+-+Single+10%2F81","name":"Charlotte Sometimes - Single 10\/81","mbid":""}]}}'
+        output: 
+          - 
+            artist_title: Interpol
+            artist_mbid: ""
+            album_title: "Turn On the Bright Lights (Tenth Anniversary Edition)"
+            album_mbid: ""
+            track_title: NYC
+            track_mbid: 00a9cf32-9595-4182-b8ff-2ac1fd5c0448
+            scrobble_date: 2020-10-03 22:33:35 +00:00
+          - 
+            album_mbid: 19166dda-fa04-4b48-9c66-d898aa6a2589
+            album_title: Spooky
+            artist_mbid: ""
+            artist_title: Lush
+            scrobble_date: 2020-10-03 22:00:15 +00:00
+            track_mbid: 0683db6c-a90a-3615-b9b0-293d7580ab72
+            track_title: "Nothing Natural"
+          - 
+            album_mbid: ""
+            album_title: "Staring At The Sea - The Singles"
+            artist_mbid: 69ee3720-a7cb-4402-b48d-a02c366f2bcf
+            artist_title: "The Cure"
+            scrobble_date: 2020-10-03 21:56:02 +00:00
+            track_mbid: ""
+            track_title: "Charlotte Sometimes - Single 10/81"
+    some_tracks_three_pages: 
+        input:
+            key: "somekey"
+            user: "someuser"
+            from: "03.10.2020 22:56:02"
+            to: "03.10.2020 23:33:35"
+        url: 
+          - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=someuser&from=1601765762&to=1601768015&limit=1000&format=json&page=1"
+          - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=someuser&from=1601765762&to=1601768015&limit=1000&format=json&page=2"
+          - "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&api_key=somekey&user=someuser&from=1601765762&to=1601768015&limit=1000&format=json&page=3"
+        response: 
+          - '{"recenttracks":{"@attr":{"page":"1","total":"3","user":"someuser","perPage":"1","totalPages":"3"},"track":[{"artist":{"mbid":"","#text":"Interpol"},"album":{"mbid":"","#text":"Turn On the Bright Lights (Tenth Anniversary Edition)"},"image":[{"size":"small","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/34s\/a261bb41af894c23ade468ca9f5c4ae9.png"},{"size":"medium","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/64s\/a261bb41af894c23ade468ca9f5c4ae9.png"},{"size":"large","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/174s\/a261bb41af894c23ade468ca9f5c4ae9.png"},{"size":"extralarge","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/300x300\/a261bb41af894c23ade468ca9f5c4ae9.png"}],"streamable":"0","date":{"uts":"1601764415","#text":"03 Oct 2020, 22:33"},"url":"https:\/\/www.last.fm\/music\/Interpol\/_\/NYC","name":"NYC","mbid":"00a9cf32-9595-4182-b8ff-2ac1fd5c0448"}]}}'
+          - '{"recenttracks":{"@attr":{"page":"2","total":"3","user":"someuser","perPage":"1","totalPages":"3"},"track":[{"artist":{"mbid":"","#text":"Lush"},"album":{"mbid":"19166dda-fa04-4b48-9c66-d898aa6a2589","#text":"Spooky"},"image":[{"size":"small","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/34s\/bfb054f9639a4ce195ced8ea7305f2bc.png"},{"size":"medium","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/64s\/bfb054f9639a4ce195ced8ea7305f2bc.png"},{"size":"large","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/174s\/bfb054f9639a4ce195ced8ea7305f2bc.png"},{"size":"extralarge","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/300x300\/bfb054f9639a4ce195ced8ea7305f2bc.png"}],"streamable":"0","date":{"uts":"1601762415","#text":"03 Oct 2020, 22:00"},"url":"https:\/\/www.last.fm\/music\/Lush\/_\/Nothing+Natural","name":"Nothing Natural","mbid":"0683db6c-a90a-3615-b9b0-293d7580ab72"}]}}'
+          - '{"recenttracks":{"@attr":{"page":"3","total":"3","user":"someuser","perPage":"1","totalPages":"3"},"track":[{"artist":{"mbid":"69ee3720-a7cb-4402-b48d-a02c366f2bcf","#text":"The Cure"},"album":{"mbid":"","#text":"Staring At The Sea - The Singles"},"image":[{"size":"small","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/34s\/d896b0acc9a14a14921401752121e853.jpg"},{"size":"medium","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/64s\/d896b0acc9a14a14921401752121e853.jpg"},{"size":"large","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/174s\/d896b0acc9a14a14921401752121e853.jpg"},{"size":"extralarge","#text":"https:\/\/lastfm.freetls.fastly.net\/i\/u\/300x300\/d896b0acc9a14a14921401752121e853.jpg"}],"streamable":"0","date":{"uts":"1601762162","#text":"03 Oct 2020, 21:56"},"url":"https:\/\/www.last.fm\/music\/The+Cure\/_\/Charlotte+Sometimes+-+Single+10%2F81","name":"Charlotte Sometimes - Single 10\/81","mbid":""}]}}'
+        output: 
+          - 
+            album_mbid: ""
+            album_title: "Turn On the Bright Lights (Tenth Anniversary Edition)"
+            artist_mbid: ""
+            artist_title: Interpol
+            scrobble_date: 2020-10-03 22:33:35 +00:00
+            track_mbid: 00a9cf32-9595-4182-b8ff-2ac1fd5c0448
+            track_title: NYC
+          - 
+            album_mbid: 19166dda-fa04-4b48-9c66-d898aa6a2589
+            album_title: Spooky
+            artist_mbid: ""
+            artist_title: Lush
+            scrobble_date: 2020-10-03 22:00:15 +00:00
+            track_mbid: 0683db6c-a90a-3615-b9b0-293d7580ab72
+            track_title: "Nothing Natural"
+          - 
+            album_mbid: ""
+            album_title: "Staring At The Sea - The Singles"
+            artist_mbid: 69ee3720-a7cb-4402-b48d-a02c366f2bcf
+            artist_title: "The Cure"
+            scrobble_date: 2020-10-03 21:56:02 +00:00
+            track_mbid: ""
+            track_title: "Charlotte Sometimes - Single 10/81"

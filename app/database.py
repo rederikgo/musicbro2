@@ -75,7 +75,7 @@ class LastfmUpdater(DB):
     # Get artist id from album id
     def get_artist_id_from_album(self, album_id: int) -> Optional[int]:
         self.cur.execute("""
-            select albums.artist
+            select albums.artist_id
             from albums
             where albums.id = %s
         """, (album_id, ))
@@ -114,7 +114,7 @@ class LastfmUpdater(DB):
             self.cur.execute("""
                 select albums.id
                 from albums
-                where albums.title = %s and albums.artist = %s
+                where albums.title = %s and albums.artist_id = %s
             """, (title, artist_id))
         result = self.cur.fetchall()
 
@@ -149,7 +149,7 @@ class LastfmUpdater(DB):
     # Add album
     def add_album(self, title: str, artist_id: int, mbid: str = '') -> int:
         self.cur.execute("""
-            insert into albums (mbid, title, artist, release_date, ts)
+            insert into albums (mbid, title, artist_id, release_date, ts)
             values (%s, %s, %s, null, %s)
             returning id
         """, (mbid, title, artist_id, self.get_utc_now()))
@@ -173,7 +173,7 @@ class LastfmUpdater(DB):
             self.cur.execute("""
                 select tracks.id
                 from tracks
-                where tracks.title = %s and tracks.album = %s
+                where tracks.title = %s and tracks.album_id = %s
             """, (title, album_id))
             result = self.cur.fetchall()
 
@@ -194,7 +194,7 @@ class LastfmUpdater(DB):
     # Add track
     def add_track(self, title: str, album_id: int, mbid: str = '') -> int:
         self.cur.execute("""
-            insert into tracks (mbid, title, album, ts)
+            insert into tracks (mbid, title, album_id, ts)
             values (%s, %s, %s, %s)
             returning id
         """, (mbid, title, album_id, self.get_utc_now()))
@@ -229,7 +229,7 @@ class LastfmUpdater(DB):
             track_id = self.add_track(track_title, album_id, track_mbid)
 
         self.cur.execute("""
-            insert into lastfm (user_id, track, scrobbled, ts)
+            insert into lastfm (user_id, track_id, scrobbled, ts)
             values (%s, %s, %s, %s)
             returning id
         """, (user, track_id, scrobbled, self.get_utc_now()))
