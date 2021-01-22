@@ -3,13 +3,10 @@
 Wrappers for Telegram, Last.fm
 """
 from datetime import datetime, timezone
-import json
-import logging
 import sys
 import time
 from typing import Optional
 
-import requests
 from requests import Request, Session
 
 from app.config import Config
@@ -45,18 +42,19 @@ class Requester:
                 s = Session()
                 prepped = Request('GET', url, params=params, headers=self.headers).prepare()
                 response = s.send(prepped, proxies=self.proxies)
-                #response = requests.get(url, headers=self.headers, proxies=self.proxies, params=params)
                 self.last_response = response
                 if response.status_code == 200 and type(response.json()) == dict:
-                    self.logger.debug(f'{response.status_code}: {url}, {params}')
+                    log_message = {'url': url, 'status_code': response.status_code} | params
+                    self.logger.debug(f'Requester:Request:{log_message}')
                     return response.json()
                 else:
-                    self.logger.warning(f'{response.status_code}: {url}, {params}')
+                    log_message = {'url': url, 'status_code': response.status_code} | params
+                    self.logger.warning(f'Requester:Request:{log_message}')
             except:
                 self.logger.error(f'{sys.exc_info()} on {url}')
 
-        self.logger.error('Too many request errors in a row')
-        raise UserWarning('Too many request errors in a row')
+        self.logger.error('Requester:Too many request errors in a row. Terminating session')
+        raise UserWarning('Requester:Too many request errors in a row. Terminating session')
 
     # Rate limiter, no more than n requests per second
     def _request_throttle(self):
@@ -70,6 +68,7 @@ class Requester:
 class LastFmRequester(Requester):
     api_endpoint = "https://ws.audioscrobbler.com/2.0/?"
 
+    # Class for track data
     class Track:
         def __init__(self, track: dict):
             self.artist_title = track['artist']['#text']
@@ -80,38 +79,8 @@ class LastFmRequester(Requester):
             self.track_mbid = track['mbid']
             self.scrobble_date = datetime.fromtimestamp(int(track['date']['uts']), tz=timezone.utc)
 
-    def _check_response_status(self, response: dict) -> bool:
-        if 'error' in response.keys():
-            self.logger.warning(f'Requester: Got error in Last.fm response: {response["message"]}')
-            return False
-        else:
-            return True
-
-
-    def _get_page(self, params: dict, page_num: int) -> Optional[dict]:
-        params['page'] = page_num
-        r = self._get_url(LastFmRequester.api_endpoint, params)
-        if not self._check_response_status(r):
-            return None
-        else:
-            return r
-
+    # Get the list of Track objects, representing scrobbled tracks for user between datetimes
     def get_recent_tracks(self, user_name: str, from_time: datetime, to_time: datetime = datetime.utcnow()) -> Optional[list]:
-        def _extract_data(inputdict: dict) -> list:
-            if type(inputdict['recenttracks']['track']) != list:
-                return []
-
-            extracted_tracks = []
-            for track in inputdict['recenttracks']['track']:
-                try:
-                    if track['@attr']['nowplaying'] == 'true':
-                        continue
-                except KeyError:
-                    pass
-
-                extracted_tracks.append(self.Track(track))
-            return extracted_tracks
-
         params = {
             'method': 'user.getrecenttracks',
             'api_key': self.token,
@@ -122,10 +91,12 @@ class LastFmRequester(Requester):
             'format': 'json'
         }
 
+        self.logger.debug(f'Requester:Requesting tracks for user \'{user_name}\' from {from_time} to {to_time}')
         response = self._get_page(params, 1)
         if response:
-            tracklist = _extract_data(response)
+            tracklist = self._extract_data(response)
         else:
+            self.logger.info(f'Requester:Total 0 tracks extracted for user \'{user_name}\'')
             return None
 
         total_tracks = int(response['recenttracks']['@attr']['total'])
@@ -134,15 +105,50 @@ class LastFmRequester(Requester):
             for page in range(2, total_pages + 1):
                 if response:
                     response = self._get_page(params, page)
-                    tracklist += _extract_data(response)
+                    tracklist += self._extract_data(response)
                 else:
                     break
 
         if total_tracks != len(tracklist):
-            self.logger.error(f'Total number of tracks does not match parsed output for {params["user_name"]} from {params["from"]} to {params["to"]}.'
+            self.logger.info(f'Requester:Total number of tracks does not match parsed output for {params["user_name"]} from {params["from"]} to {params["to"]}.'
                               f' Expected {total_tracks}, got {len(tracklist)}')
 
+        self.logger.info(f'Requester:Total {len(tracklist)} track(s) extracted for user \'{user_name}\'')
         return tracklist
+
+    # Call request with the page specified
+    def _get_page(self, params: dict, page_num: int) -> Optional[dict]:
+        params['page'] = page_num
+        r = self._get_url(LastFmRequester.api_endpoint, params)
+        if self._check_response_status(r):
+            return r
+        else:
+            return None
+
+    # Check if there is an error in Last.fm response
+    def _check_response_status(self, response: dict) -> bool:
+        if 'error' in response.keys():
+            self.logger.warning(f'Requester:Got error in Last.fm response:{response}')
+            return False
+        else:
+            return True
+
+    # Parse json for scrobbled tracks, return the list of Track objects
+    def _extract_data(self, inputdict: dict) -> list:
+        if type(inputdict['recenttracks']['track']) != list:
+            return []
+
+        extracted_tracks = []
+        for track in inputdict['recenttracks']['track']:
+            try:
+                if track['@attr']['nowplaying'] == 'true':
+                    continue
+            except KeyError:
+                pass
+
+            extracted_tracks.append(self.Track(track))
+        self.logger.debug(f'Requester:Extracted {len(extracted_tracks)} track(s)')
+        return extracted_tracks
 
 
 # Telegram wrapper subclass

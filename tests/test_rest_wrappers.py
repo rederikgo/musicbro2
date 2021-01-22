@@ -2,16 +2,13 @@ from datetime import datetime, timezone
 import json
 import os
 import pytest
-import requests
-from Tools.scripts.fixcid import err
-from pytest_mock import mocker
-import unittest
 from unittest import mock
 
 import yaml
 
 from app.rest_wrappers import LastFmRequester
 from app.config import Config
+
 
 @pytest.fixture(scope="module")
 def cfg():
