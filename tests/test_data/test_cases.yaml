@@ -1,10 +1,36 @@
 database:
+  get_users_for_lastfm_nousers:
+    get1:
+        input:
+        output:
   add_user:
     add1:
       input:
         lastfm_username: "username"
         telegram_handle: "@username"
+        lastfm_enabled: True
+        telegram_enabled: False
       output: 1
+    add2:
+        input:
+            lastfm_username: "username2"
+            telegram_handle: "@username2"
+            lastfm_enabled: False
+            telegram_enabled: True
+        output: 2
+    add3:
+        input:
+            lastfm_username: "username3"
+            telegram_handle: "@username3"
+            lastfm_enabled: True
+            telegram_enabled: True
+        output: 3
+  get_users_for_lastfm:
+    get1:
+        input:
+        output: 
+            - [1, username]
+            - [3, username3]
   scrobble_track:
     scrobble1-1:
       input:

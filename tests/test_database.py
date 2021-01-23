@@ -38,10 +38,31 @@ def test_connection(db):
     db.cur.execute("SELECT 1")
 
 
+def test_get_users_for_lastfm_nousers(db, cases):
+    test_cases = cases['database']['get_users_for_lastfm_nousers']
+    for case in test_cases:
+        c = test_cases[case]
+        assert db.get_users_for_lastfm_import() == c['output']
+    pass
+
+
 def test_add_user(db, cases):
     test_cases = cases['database']['add_user']
     for case in test_cases:
-        assert db.add_user(test_cases[case]['input']['lastfm_username'], test_cases[case]['input']['telegram_handle']) == test_cases[case]['output']
+        assert db.add_user(
+            test_cases[case]['input']['lastfm_username'],
+            test_cases[case]['input']['telegram_handle'],
+            test_cases[case]['input']['lastfm_enabled'],
+            test_cases[case]['input']['telegram_enabled']
+        ) == test_cases[case]['output']
+
+
+def test_get_users_for_lastfm(db, cases):
+    test_cases = cases['database']['get_users_for_lastfm']
+    for case in test_cases:
+        c = test_cases[case]
+        assert db.get_users_for_lastfm_import() == [tuple(x) for x in c['output']]
+    pass
 
 
 def test_add_recent_track(db, cases):

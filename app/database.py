@@ -239,17 +239,30 @@ class LastfmUpdater(DB):
         return artist_id, album_id, track_id, scrobbled_id
 
     # Add user
-    def add_user(self, lastfm_name: str, telegram_name: str) -> int:
+    def add_user(self, lastfm_name: str, telegram_name: str, lastfm_enabled: bool = True, telegram_enabled: bool = True) -> int:
         if not lastfm_name:
             self.logger.error('Database: Cant add user without lastfm profile name')
         if not telegram_name:
             self.logger.error('Database: Cant add user without telegram name')
 
         self.cur.execute("""
-            insert into users (lastfm_username, telegram_handle)
-            values (%s, %s)
+            insert into users (lastfm_username, lastfm_enabled, telegram_handle, telegram_enabled, ts)
+            values (%s, %s, %s, %s, %s)
             returning id
-        """, (lastfm_name, telegram_name))
+        """, (lastfm_name, lastfm_enabled, telegram_name, telegram_enabled, self.get_utc_now()))
         result = self.cur.fetchall()[0][0]
         self.conn.commit()
+        return result
+
+    def get_users_for_lastfm_import(self):
+        self.cur.execute("""
+            select id, lastfm_username
+            from users
+            where users.lastfm_enabled = TRUE 
+        """,)
+        result = self.cur.fetchall()
+
+        if not result:
+            self.logger.debug(f'Database: No users with enabled lastfm import found')
+            result = None
         return result
