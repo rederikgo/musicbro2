@@ -43,7 +43,6 @@ def test_get_users_for_lastfm_nousers(db, cases):
     for case in test_cases:
         c = test_cases[case]
         assert db.get_users_for_lastfm_import() == c['output']
-    pass
 
 
 def test_add_user(db, cases):
@@ -62,7 +61,13 @@ def test_get_users_for_lastfm(db, cases):
     for case in test_cases:
         c = test_cases[case]
         assert db.get_users_for_lastfm_import() == [tuple(x) for x in c['output']]
-    pass
+
+
+def test_get_lastfm_username_by_id(db, cases):
+    test_cases = cases['database']['get_lastfm_username_by_id']
+    for case in test_cases:
+        c = test_cases[case]
+        assert db.get_lastfm_username_by_id(c['input']) == c['output']
 
 
 def test_add_recent_track(db, cases):
@@ -71,4 +76,10 @@ def test_add_recent_track(db, cases):
         c = test_cases[case]
         track = LastFmRequester.Track(c['input'], source='test_case')
         assert db.add_scrobbled_track(c['input']['user'], track) == tuple(c['output'])
-    pass
+
+
+def test_get_last_scrobbled_track(db, cases):
+    test_cases = cases['database']['get_last_scrobbled_track']
+    for case in test_cases:
+        c = test_cases[case]
+        assert db.get_last_scrobbled_track(c['input']) == c['output']

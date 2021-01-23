@@ -266,3 +266,35 @@ class LastfmUpdater(DB):
             self.logger.debug(f'Database: No users with enabled lastfm import found')
             result = None
         return result
+
+    def get_lastfm_username_by_id(self, user_id):
+        self.cur.execute("""
+            select lastfm_username
+            from users
+            where users.id = %s 
+        """, (user_id, ))
+        result = self.cur.fetchall()
+
+        if not result:
+            self.logger.debug(f'Database: Found no users with id {user_id}')
+            result = None
+        if result:
+            result = result[0][0]
+        return result
+
+    def get_last_scrobbled_track(self, user_id):
+        self.cur.execute("""
+            select max(scrobbled)
+            from lastfm
+            where lastfm.user_id = %s 
+            group by lastfm.user_id
+        """, (user_id, ))
+        result = self.cur.fetchall()
+
+        if not result:
+            user_name = self.get_lastfm_username_by_id(user_id)
+            self.logger.debug(f'Database: No scrobbled tracks found for user {user_name}')
+            result = None
+        if result:
+            result = result[0][0]
+        return result
