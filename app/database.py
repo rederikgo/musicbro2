@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 import psycopg2
 
 from app.config import Config
+from app.rest_wrappers import LastFmRequester
 
 
 class DB:
@@ -203,36 +204,36 @@ class LastfmUpdater(DB):
         return result
 
     # Add scrobbled track to recent tracks
-    def add_scrobbled_track(self, user: int, artist_name: str, artist_mbid: str, album_title: str, album_mbid: str, track_title: str, track_mbid: str, scrobbled: datetime) -> Optional[Tuple]:
-        if not artist_name or not track_title:
+    def add_scrobbled_track(self, user: int, track: LastFmRequester.Track) -> Optional[Tuple]:
+        if not track.artist_title or not track.track_title:
             self.logger.error('Last.fm import: Missing track or artist. Skipping...')
             return
         if not user:
             self.logger.error('Last.fm import: Missing user. Skipping...')
             return
-        if not scrobbled:
+        if not track.scrobble_date:
             self.logger.error('Last.fm import: Missing scrobble time. Skipping...')
             return
-        if not album_title:
+        if not track.album_title:
             album_title = 'NULL'
 
-        artist_id = self.get_artist_id(artist_name, artist_mbid)
+        artist_id = self.get_artist_id(track.artist_title, track.artist_mbid)
         if not artist_id:
-            artist_id = self.add_artist(artist_name, artist_mbid)
+            artist_id = self.add_artist(track.artist_title, track.artist_mbid)
 
-        album_id = self.get_album_id(album_title, artist_id, album_mbid)
+        album_id = self.get_album_id(track.album_title, artist_id, track.album_mbid)
         if not album_id:
-            album_id = self.add_album(album_title, artist_id, album_mbid)
+            album_id = self.add_album(track.album_title, artist_id, track.album_mbid)
 
-        track_id = self.get_track_id(track_title, album_id, track_mbid)
+        track_id = self.get_track_id(track.track_title, album_id, track.track_mbid)
         if not track_id:
-            track_id = self.add_track(track_title, album_id, track_mbid)
+            track_id = self.add_track(track.track_title, album_id, track.track_mbid)
 
         self.cur.execute("""
             insert into lastfm (user_id, track_id, scrobbled, ts)
             values (%s, %s, %s, %s)
             returning id
-        """, (user, track_id, scrobbled, self.get_utc_now()))
+        """, (user, track_id, track.scrobble_date, self.get_utc_now()))
         scrobbled_id = self.cur.fetchall()[0][0]  # type: int
 
         return artist_id, album_id, track_id, scrobbled_id

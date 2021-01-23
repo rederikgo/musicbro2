@@ -70,14 +70,23 @@ class LastFmRequester(Requester):
 
     # Class for track data
     class Track:
-        def __init__(self, track: dict):
-            self.artist_title = track['artist']['#text']
-            self.artist_mbid = track['artist']['mbid']
-            self.album_title = track['album']['#text']
-            self.album_mbid = track['album']['mbid']
-            self.track_title = track['name']
-            self.track_mbid = track['mbid']
-            self.scrobble_date = datetime.fromtimestamp(int(track['date']['uts']), tz=timezone.utc)
+        def __init__(self, track: dict, source: str = 'web'):
+            if source == 'web':
+                self.artist_title = track['artist']['#text']
+                self.artist_mbid = track['artist']['mbid']
+                self.album_title = track['album']['#text']
+                self.album_mbid = track['album']['mbid']
+                self.track_title = track['name']
+                self.track_mbid = track['mbid']
+                self.scrobble_date = datetime.fromtimestamp(int(track['date']['uts']), tz=timezone.utc)
+            else:
+                self.artist_title = track['artist_title']
+                self.artist_mbid = track['artist_mbid']
+                self.album_title = track['album_title']
+                self.album_mbid = track['album_mbid']
+                self.track_title = track['track_title']
+                self.track_mbid = track['track_mbid']
+                self.scrobble_date = track['scrobble_date']
 
     # Get the list of Track objects, representing scrobbled tracks for user between datetimes
     def get_recent_tracks(self, user_name: str, from_time: datetime, to_time: datetime = datetime.utcnow()) -> Optional[list]:

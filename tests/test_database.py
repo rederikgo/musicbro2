@@ -3,9 +3,9 @@ import os
 import pytest
 import yaml
 
-from app.database import LastfmUpdater
 from app.config import Config
-
+from app.database import LastfmUpdater
+from app.rest_wrappers import LastFmRequester
 
 @pytest.fixture(scope="module")
 def db():
@@ -48,14 +48,6 @@ def test_add_recent_track(db, cases):
     test_cases = cases['database']['scrobble_track']
     for case in test_cases:
         c = test_cases[case]
-        assert db.add_scrobbled_track(
-            c['input']['user'],
-            c['input']['artist_name'],
-            c['input']['artist_mbid'],
-            c['input']['album_title'],
-            c['input']['album_mbid'],
-            c['input']['track_title'],
-            c['input']['track_mbid'],
-            c['input']['scrobbled']
-        ) == tuple(c['output'])
+        track = LastFmRequester.Track(c['input'], source='test_case')
+        assert db.add_scrobbled_track(c['input']['user'], track) == tuple(c['output'])
     pass

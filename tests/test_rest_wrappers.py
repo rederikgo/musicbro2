@@ -6,8 +6,8 @@ from unittest import mock
 
 import yaml
 
-from app.rest_wrappers import LastFmRequester
 from app.config import Config
+from app.rest_wrappers import LastFmRequester
 
 
 @pytest.fixture(scope="module")
