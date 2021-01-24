@@ -254,7 +254,8 @@ class LastfmUpdater(DB):
         self.conn.commit()
         return result
 
-    def get_users_for_lastfm_import(self):
+    # Get the list of users to update scrobbled tracks
+    def get_users_for_lastfm_import(self) -> list:
         self.cur.execute("""
             select id, lastfm_username
             from users
@@ -264,10 +265,11 @@ class LastfmUpdater(DB):
 
         if not result:
             self.logger.debug(f'Database: No users with enabled lastfm import found')
-            result = None
+            result = []
         return result
 
-    def get_lastfm_username_by_id(self, user_id):
+    # Get the lastfm username by user id
+    def get_lastfm_username_by_id(self, user_id: int) -> Optional[str]:
         self.cur.execute("""
             select lastfm_username
             from users
@@ -282,7 +284,8 @@ class LastfmUpdater(DB):
             result = result[0][0]
         return result
 
-    def get_last_scrobbled_track(self, user_id):
+    # Get the time of the last scrobble for the user (for lastfm request)
+    def get_last_scrobbled_time(self, user_id: int) -> datetime:
         self.cur.execute("""
             select max(scrobbled)
             from lastfm
@@ -291,10 +294,10 @@ class LastfmUpdater(DB):
         """, (user_id, ))
         result = self.cur.fetchall()
 
-        if not result:
-            user_name = self.get_lastfm_username_by_id(user_id)
-            self.logger.debug(f'Database: No scrobbled tracks found for user {user_name}')
-            result = None
         if result:
             result = result[0][0]
+        else:
+            user_name = self.get_lastfm_username_by_id(user_id)
+            self.logger.debug(f'Database: No scrobbled tracks found for user {user_name}')
+            result = datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
         return result

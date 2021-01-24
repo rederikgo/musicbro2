@@ -78,8 +78,8 @@ def test_add_recent_track(db, cases):
         assert db.add_scrobbled_track(c['input']['user'], track) == tuple(c['output'])
 
 
-def test_get_last_scrobbled_track(db, cases):
-    test_cases = cases['database']['get_last_scrobbled_track']
+def test_get_last_scrobbled_time(db, cases):
+    test_cases = cases['database']['get_last_scrobbled_time']
     for case in test_cases:
         c = test_cases[case]
-        assert db.get_last_scrobbled_track(c['input']) == c['output']
+        assert db.get_last_scrobbled_time(c['input']) == c['output']

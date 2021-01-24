@@ -2,7 +2,7 @@ database:
   get_users_for_lastfm_nousers:
     get1:
         input:
-        output:
+        output: []
   add_user:
     add1:
       input:
@@ -135,10 +135,13 @@ database:
         track_mbid: ""
         scrobble_date: "2020-03-01 12:15:51"
       output: [1, 2, 8, 9]
-  get_last_scrobbled_track:
+  get_last_scrobbled_time:
     get1:
         input: 1
         output: 2020-03-01 13:01:01 +00:00
+    get2:
+        input: 2
+        output: 1970-01-01 00:00:00 +00:00
 lastfm: 
     error: 
         input:
