@@ -14,13 +14,19 @@ from app.config import Config
 
 # Wrapper parent class
 class Requester:
-    def __init__(self, token, proxies=None, rate_limit=1, error_retries=3, cfg=Config()):
+    def __init__(self, token=None, proxies=None, rate_limit=None, error_retries=None, cfg=Config()):
+        if not token:
+            token = cfg.lastfm.token
         if not proxies:
             proxies = {}
+        if not rate_limit:
+            rate_limit = cfg.lastfm.rate_limit
+        if not error_retries:
+            error_retries = cfg.lastfm.error_retries
 
         # Setup logging
         self.cfg = cfg
-        self.logger = self.cfg.get_logger()
+        self.logger = cfg.get_logger()
 
         self.token = token
         self.headers = {'User-Agent': 'MusicBro2/alpha'}
